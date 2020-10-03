@@ -16,13 +16,11 @@ public class Main {
 
         var parsedArgs = getArgs(args);
         var filename = (String)parsedArgs.get("filename");
-        var column = (Integer)parsedArgs.get("column");
+        var column = Integer.parseInt((String) parsedArgs.get("column"));
 
         var app = context.getBean(AirportApplication.class);
         try {
-            var start = System.currentTimeMillis();
             app.init(filename, column);
-            System.out.println(System.currentTimeMillis() - start);
             app.run();
         } catch (Exception e) {
             System.out.println(e.getMessage());
