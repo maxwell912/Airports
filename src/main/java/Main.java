@@ -16,7 +16,7 @@ public class Main {
 
         var parsedArgs = getArgs(args);
         var filename = (String)parsedArgs.get("filename");
-        var column = Integer.parseInt((String) parsedArgs.get("column"));
+        var column = Integer.parseInt(parsedArgs.get("column").toString());
 
         var app = context.getBean(AirportApplication.class);
         try {

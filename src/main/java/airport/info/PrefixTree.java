@@ -12,7 +12,7 @@ class PrefixTree<T> implements PrefixMap<String, T> {
     T value;
 
     PrefixTree<T> subTree;
-    PrefixTree<T> next;
+    PrefixTree<T> neighbourTree;
 
     PrefixTree() {}
 
@@ -61,8 +61,8 @@ class PrefixTree<T> implements PrefixMap<String, T> {
 
         var length = getCommonPrefixLength(prefix);
         if (length == 0) {
-            if (next != null)
-                return next.getByPrefix(prefix);
+            if (neighbourTree != null)
+                return neighbourTree.getByPrefix(prefix);
 
         } else if (key.length() == length && prefix.length() > length){
             if (subTree != null)
@@ -78,21 +78,21 @@ class PrefixTree<T> implements PrefixMap<String, T> {
             subTree = new PrefixTree<>(newKey, newValue);
         } else if (subTree.getCommonPrefixLength(newKey) == 0 && subTree.key.compareTo(newKey) > 0) {
             var newNode = new PrefixTree<>(newKey, newValue);
-            newNode.next = this.subTree;
+            newNode.neighbourTree = this.subTree;
             this.subTree = newNode;
         } else
             subTree.add(newKey, newValue);
     }
 
     private void addToCurrentTree(String newKey, T newValue) {
-        if (next == null) {
-            next = new PrefixTree<>(newKey, newValue);
-        } else if (next.key.compareTo(newKey) >= 0 && next.getCommonPrefixLength(newKey) == 0) {
+        if (neighbourTree == null) {
+            neighbourTree = new PrefixTree<>(newKey, newValue);
+        } else if (neighbourTree.key.compareTo(newKey) >= 0 && neighbourTree.getCommonPrefixLength(newKey) == 0) {
             var newNode = new PrefixTree<>(newKey, newValue);
-            newNode.next = this.next;
-            this.next = newNode;
+            newNode.neighbourTree = this.neighbourTree;
+            this.neighbourTree = newNode;
         } else
-            next.add(newKey, newValue);
+            neighbourTree.add(newKey, newValue);
     }
 
     private void splitNode(Integer prefixLength) {
@@ -141,7 +141,7 @@ class PrefixTree<T> implements PrefixMap<String, T> {
 
             while (true) {
                 while (true) {
-                    if (currentNode.next != null)
+                    if (currentNode.neighbourTree != null)
                         nodeStack.push(currentNode);
                     if (currentNode.hasValue)
                         results.add(currentNode.value);
@@ -151,7 +151,7 @@ class PrefixTree<T> implements PrefixMap<String, T> {
                 }
                 if (nodeStack.empty())
                     break;
-                currentNode = nodeStack.pop().next;
+                currentNode = nodeStack.pop().neighbourTree;
             }
         }
 
